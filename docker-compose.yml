@@ -1,0 +1,18 @@
+version: "3.8"
+services:
+  test-webserver:
+    image: traefik/whoami
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.local-test.rule=Host(`test.localhost`)"
+      - "traefik.http.routers.local-test.entrypoints=websecure"
+      - "traefik.http.routers.local-test.tls=true"
+      - "traefik.http.services.local-test.loadbalancer.server.port=80"
+      - "traefik.http.routers.local-test.middlewares=local-test-auth"
+        # logpass: test / test
+      - "traefik.http.middlewares.local-test-auth.basicauth.users=test:$$apr1$$mpR8GvPq$$anwQTaW/yZ8kW3zsIvF5V1"
+    networks:
+      - traefik-public
+networks:
+  traefik-public:
+    external: true
